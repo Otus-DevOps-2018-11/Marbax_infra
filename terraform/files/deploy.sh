@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -eu
 
 APP_DIR=${1:-$HOME}
 
@@ -8,6 +8,7 @@ cd $APP_DIR/reddit
 bundle install
 
 sudo mv /tmp/puma.service /etc/systemd/system/puma.service
+sudo systemctl daemon-reload
 sudo systemctl start puma
 sudo systemctl enable puma
 

@@ -19,6 +19,11 @@ variable private_key_path {
   description = "Private key path"
 }
 
+variable zone {
+  description = "Instance zone"
+  default     = "europe-west3-c"
+}
+
 #base
 #reddit-base-1547480736
 #full

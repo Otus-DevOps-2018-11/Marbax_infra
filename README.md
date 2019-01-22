@@ -47,4 +47,10 @@ testapp_port = 9292
 
 
 #PR8 
+Добавление ключей для проекта ,для нескольких пользователей
 
+resource "google_compute_project_metadata_item" "default" {
+  key   = "ssh-keys"
+  value = "op:${file(var.public_key_path)}appuser:${file(var.public_key_path)}appuser1:${file(var.public_key_path)}"
+}
+Все ключи перезаписываются, если в вебе добавлять какие то ключи , то при след terraform apply они будут удалены .
