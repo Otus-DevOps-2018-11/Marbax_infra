@@ -45,6 +45,8 @@ gcloud compute --project=infra-226316 firewall-rules create default-puma-server 
 testapp_IP = 35.204.135.240
 testapp_port = 9292
 
+#HW7 created "fry" image and create "bake" image with additional tasks , aded puma.service which starts with machine and aded script to config-scripts which create instance from reddit-full image
+
 
 #PR8 
 Добавление ключей для проекта ,для нескольких пользователей
