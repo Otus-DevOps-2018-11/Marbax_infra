@@ -2,3 +2,4 @@ project = "infra-226361"
 public_key_path = "~/.ssh/id_rsa.pub"
 disk_image = "reddit-base-1547480736" 
 private_key_path = "~/.ssh/id_rsa"
+
