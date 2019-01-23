@@ -25,10 +25,12 @@ resource "google_compute_instance" "app" {
   # определение сетевого интерфейса
   network_interface {
     # сеть, к которой присоединить данный интерфейс
-    network = "default"
+    network = "default" 
 
-    # использовать ephemeral IP для доступа из Интернет
-    access_config {}
+    # использовать static IP для доступа из Интернет
+    access_config {
+      nat_ip = "${google_compute_address.app_ip.address}"
+    }
   }
 
   metadata {
@@ -52,6 +54,22 @@ resource "google_compute_instance" "app" {
   }
 }
 
+resource "google_compute_firewall" "firewall_ssh" {
+  name    = "default-allow-ssh"
+  network = "default"
+
+  allow {
+    protocol = "tcp"
+    ports    = ["22"]
+  }
+
+  source_ranges = ["0.0.0.0/0"]
+}
+
+resource "google_compute_address" "app_ip" {
+  name = "reddit-app-ip"
+}
+
 resource "google_compute_firewall" "firewall_puma" {
   name = "allow-puma-default"
 
@@ -70,5 +88,3 @@ resource "google_compute_firewall" "firewall_puma" {
   # Правило применимо для инстансов с перечисленными тэгами
   target_tags = ["reddit-app"]
 }
-
-

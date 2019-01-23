@@ -29,5 +29,3 @@ variable zone {
 #full
 #reddit-base-1547582274
 
-
-
