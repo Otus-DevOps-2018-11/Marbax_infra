@@ -45,5 +45,26 @@ gcloud compute --project=infra-226316 firewall-rules create default-puma-server 
 testapp_IP = 35.204.135.240
 testapp_port = 9292
 
+#HW7 created "fry" image and create "bake" image with additional tasks , aded puma.service which starts with machine and aded script to config-scripts which create instance from reddit-full image
 
 
+#PR8 
+Добавление ключей для проекта ,для нескольких пользователей
+
+resource "google_compute_project_metadata_item" "default" {
+  key   = "ssh-keys"
+  value = "op:${file(var.public_key_path)}appuser:${file(var.public_key_path)}appuser1:${file(var.public_key_path)}"
+}
+Все ключи перезаписываются, если в вебе добавлять какие то ключи , то при след terraform apply они будут удалены .
+#PR9
+В терраформе все красивенько раскидано по модулям . 
+1. Введите в source_ranges не ваш IP адрес, примените
+правило и проверьте отсутствие соединения к обоим
+хостам по ssh. Проконтролируйте, как изменилось правило
+файрвола в веб консоли.
+-Соеденение отсутствовало.В веб консоли меняется фильтр в правеле фаерваола.
+
+-* Созданы бакеты.Перенесены стейт файлы прода и стейджа в удаленные бакеты. При паральном применении конфигурации тераформ говорит что локнут стейт :
+"Error: Error locking state: Error acquiring the state lock: writing "gs://marbax-infra-bucket2/stage/default.tflock" failed: googleapi: Error 412: Precondition Failed, conditionNotMet"
+
+-** Gровиженеры для деплоя приложения и юнита не осилил ,ошибка : * module.app.google_compute_instance.app: interrupted - last error: dial tcp 35.234.90.228:22: i/o timeout.

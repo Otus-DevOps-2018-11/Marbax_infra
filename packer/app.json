@@ -1,0 +1,32 @@
+{
+    "variables": {
+        "id_of_project": "null",
+        "famaly": "null",
+        "machine": "f1-micro"
+    },
+    "builders": [
+        {
+            "type": "googlecompute",
+            "project_id": "{{user `id_of_project`}}",
+            "image_name": "app-base-{{timestamp}}",
+            "image_family": "app-base",
+            "source_image_family": "{{user `famaly`}}",
+            "zone": "europe-west1-b",
+            "ssh_username": "op",
+            "machine_type": "{{user `machine`}}",
+            "image_description": "app_ubuntu_iso",
+            "disk_size": "10",
+            "disk_type": "pd-standard",
+            "network": "default",
+            "tags": "puma-server"
+        }
+    ],
+    "provisioners": [
+        {
+            "type": "shell",
+            "script": "scripts/install_ruby.sh",
+            "execute_command": "sudo {{.Path}}"
+        }
+    ]
+}
+
