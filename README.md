@@ -68,3 +68,8 @@ resource "google_compute_project_metadata_item" "default" {
 "Error: Error locking state: Error acquiring the state lock: writing "gs://marbax-infra-bucket2/stage/default.tflock" failed: googleapi: Error 412: Precondition Failed, conditionNotMet"
 
 -** Gровиженеры для деплоя приложения и юнита не осилил ,ошибка : * module.app.google_compute_instance.app: interrupted - last error: dial tcp 35.234.90.228:22: i/o timeout.
+
+#PR10 Ansible
+Так как папка редит существует ,то плейбук не вносит никаких изменений , если ее удалить коммандой ansible app -m command -a 'rm -rf ~/reddit' , то применения плейбука вносит изменения .
+Не совсем понял какой смысл в такнцах с бубном вокруг инвентори в формате джсона и скриптов .
+
