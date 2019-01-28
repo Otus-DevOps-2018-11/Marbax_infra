@@ -8,13 +8,13 @@
         {
             "type": "googlecompute",
             "project_id": "{{user `id_of_project`}}",
-            "image_name": "reddit-base-{{timestamp}}",
-            "image_family": "reddit-full",
+            "image_name": "db-base-{{timestamp}}",
+            "image_family": "db-base",
             "source_image_family": "{{user `famaly`}}",
             "zone": "europe-west1-b",
             "ssh_username": "op",
             "machine_type": "{{user `machine`}}",
-            "image_description": "reddit_ubuntu_iso",
+            "image_description": "db_ubuntu_iso",
             "disk_size": "10",
             "disk_type": "pd-standard",
             "network": "default",
@@ -24,17 +24,7 @@
     "provisioners": [
         {
             "type": "shell",
-            "script": "files/install_ruby.sh",
-            "execute_command": "sudo {{.Path}}"
-        },
-        {
-            "type": "shell",
-            "script": "files/install_mongodb.sh",
-            "execute_command": "sudo {{.Path}}"
-        },
-        {
-            "type": "shell",
-            "script": "files/deploy.sh",
+            "script": "scripts/install_mongodb.sh",
             "execute_command": "sudo {{.Path}}"
         }
     ]

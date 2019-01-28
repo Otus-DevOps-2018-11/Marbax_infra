@@ -1,0 +1,13 @@
+[Unit]
+Description=Puma HTTP Server
+After=mongod.service
+
+[Service]
+Type=simple
+User=op
+WorkingDirectory=/home/op/reddit
+ExecStart=/usr/local/bin/puma --dir /home/op/reddit
+
+[Install]
+WantedBy=multi-user.target
+
