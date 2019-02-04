@@ -24,3 +24,6 @@
   handlers:                               # <-- Добавим блок handlers и задачу
   - name: reload puma
     systemd: name=puma.service state=restarted  
+
+
+
