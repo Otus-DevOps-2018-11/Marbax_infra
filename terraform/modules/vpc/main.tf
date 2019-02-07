@@ -31,6 +31,17 @@ resource "google_compute_firewall" "firewall_mongo" {
   source_tags = ["reddit-app"]
 }
 
+resource "google_compute_firewall" "firewall_http" {
+  name    = "allow-app-http"
+  network = "default"
+
+  allow {
+    protocol = "tcp"
+    ports    = ["80"]
+  }
+
+}
+
 resource "google_compute_firewall" "firewall_ssh" {
   name    = "default-allow-ssh"
   network = "default"
