@@ -52,12 +52,41 @@ Marbax Infra repository
 
 </p></details>
 
-#connect with one line command
+## HW2
 
-ssh -i ~/.ssh/nikita_lessons -A op@35.207.72.229 ssh op@10.156.0.3
+<details><summary>play-travis Локальное окружение инженера. ChatOps и визуализация рабочих процессов. Командная работа с Git. Работа в GitHub.</summary><p>
 
-#rule for connection throught another host in ~/.ssh/config
+- Клонирован личный репозиторий из Otus-DevOps 2018-11 ``` git clone git@github.com:Otus-DevOps-2018-11/<GITHUB_USER>_infra.git``` 
+- Скачан шаблон PR 
+- Зарегестрировался в Slack чате
+- Создан канал для вывода проверок тревиса и добавлены преподователи
+- Интегрирован тревис со слаком 
+- Для использования команды ```travis``` установлен gem ```gem install travis && travis login --com```
+- В корне репозитория создан ямль тревиса 
+- Зашифрован токен полученый от тревиса ```travis encrypt "devops-team-otus:<ваш_токен>#<имя_вашего_канала>" --add notifications.slack.rooms --com```
 
+</p></details>
+
+## HW3
+
+<details><summary>cloud-bastion Знакомство с облачной инфраструктурой и облачными сервисами.</summary><p>
+
+### Создана учетная запись GCP
+ - Создан новый проект
+ - Добавлены ssh ключи в Compute Engine -> Metadata
+
+### Созданы инстансы в веб интерфейсе GCP и подключался к ним по ssh
+ - Создана VM со статическим внешним ИП
+ - Создана VM без внешнего ИП
+ - Настроен ssh forwarding ```ssh-add -L``` просмотр добавленых агенту ключей . ```ssh-add ~/.ssg/приватный_ключ``` добавление ключей агенту
+ - ```ssh -i ~/.ssh/ключ -A юзер@ИП``` подключаемся к бастиону используя форвард агента ```ssh ИП``` а от него к машине в локальной сети
+
+## Самостоятельное задание 
+ - Подключение в одну команду ```ssh -i ~/.ssh/nikita_lessons -A op@35.207.72.229 -W op@10.156.0.3```
+
+ <details><summary>Подключение с помощью алиаса в ~/.ssh/config.</summary><p>
+
+```
 Host internal
 	Hostname 10.156.0.3
 	User op
@@ -67,11 +96,63 @@ Host bastion
 	Hostname 35.207.72.229
 	User op
 	IdentityFile ~/.ssh/nikita_lessons
+```
+или 
 
-#ip of hosts for homework with vpn
+```
+Host internal
+        ProxyCommand ssh -A bastion -W 10.156.0.3
+        User appuser
 
+Host bastion
+        Hostname 35.207.72.229
+        User appuser
+        IdentityFile ~/.ssh/nikita_lessons
+```
+
+ </p></details>
+
+- Разрешен http и https трафик на bastion
+
+ <details><summary>На хосте bastion выполнены команды </summary><p>
+
+ cat <<EOF> setupvpn.sh
+ \#!/bin/bash
+ echo "deb http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.4 multiverse" > /etc/apt/sources.list.d/mongodb-org-3.4.list
+ echo "deb http://repo.pritunl.com/stable/apt xenial main" > /etc/apt/sources.list.d/pritunl.list
+ apt-key adv --keyserver hkp://keyserver.ubuntu.com --recv 0C49F3730359A14518585931BC711F9BA15703C6
+ apt-key adv --keyserver hkp://keyserver.ubuntu.com --recv 7568D9BB55FF9E5287D586017AE645C0CF8E292A
+ apt-get --assume-yes update
+ apt-get --assume-yes upgrade
+ apt-get --assume-yes install pritunl mongodb-org
+ systemctl start pritunl mongod
+ systemctl enable pritunl mongod
+ EOF
+
+ </p></details>
+
+- В результате установлен mongodb и pritunl
+- Открыл порт ,который слушает ВПН на бастионе для UDP 
+- Скачал пользовательский конфиг ВПНа и протестировал 
+
+### Данные для подключения 
+```
 bastion_IP = 35.207.72.229
 someinternalhost_IP = 10.156.0.3
+```
+
+- Рассмотрены варианты подключения к хостам через бастион-хост и VPN
+ 
+</p></details>
+
+## HW4
+
+<details><summary>Основные сервисы Google Cloud Platform (GCP).</summary><p>
+
+В процессе
+
+</p></details>
+
 
 #gcloud command for create instance with startup script from local file
 
