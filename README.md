@@ -95,16 +95,16 @@ gcloud compute --project=infra-226316 firewall-rules create default-puma-server 
 testapp_IP = 35.204.135.240
 testapp_port = 9292
 
-## HW7
+## HW5
 
-<details><summary>Принципы организации инфраструктурного кода и работа над инфраструктурой в команде на примере Terraform.</summary><p>
+<details><summary>Модели управления инфраструктурой. </summary><p>
 
 created "fry" image and create "bake" image with additional tasks , aded puma.service which starts with machine and aded script to config-scripts which create instance from reddit-full image
 </p></details>
 
-## HW8
+## HW6
 
-<details><summary>Управление конфигурацией.</summary><p>
+<details><summary>Практика Infrastructure as a Code (IaC)</summary><p>
 
 Добавление ключей для проекта ,для нескольких пользователей
 
@@ -115,7 +115,7 @@ resource "google_compute_project_metadata_item" "default" {
 Все ключи перезаписываются, если в вебе добавлять какие то ключи , то при след terraform apply они будут удалены .
 </p></details>
 
-## HW9
+## HW7
 
 <details><summary>Принципы организации инфраструктурного кода и работа над инфраструктурой в команде на примере Terraform.</summary><p>
 
@@ -132,17 +132,17 @@ resource "google_compute_project_metadata_item" "default" {
 -** Gровиженеры для деплоя приложения и юнита не осилил ,ошибка : * module.app.google_compute_instance.app: interrupted - last error: dial tcp 35.234.90.228:22: i/o timeout.
 </p></details>
 
-## HW10  
+## HW8
 
-<details><summary>Ansible-1</summary><p>
+<details><summary>Ansible-1 Управление конфигурацией.</summary><p>
 
 Так как папка редит существует ,то плейбук не вносит никаких изменений , если ее удалить коммандой ansible app -m command -a 'rm -rf ~/reddit' , то применения плейбука вносит изменения .
 Не совсем понял какой смысл в такнцах с бубном вокруг инвентори в формате джсона и скриптов .
 </p></details>
 
-## HW11 
+## HW9
 
-<details><summary>Ansible-2</summary><p>
+<details><summary>Ansible-2 Продолжение знакомства с Ansible: templates, handlers, dynamic inventory, vault, tags</summary><p>
 
 Пробовал использовать плейбуки, хендлеры и шаблоны для конфигурации окружения и деплоя тестового приложения.
 Исследованы разные подходы : 
@@ -153,9 +153,9 @@ resource "google_compute_project_metadata_item" "default" {
 Задание со * не выполнено :С
 </p></details>
 
-## HW11 
+## HW10
 
-<details><summary>Ansible-3 работа с ролями и окружениями</summary><p>
+<details><summary>Ansible-3 Принципы организации кода для управления конфигурацией</summary><p>
 
 - Созданные плейбуки перенесены в раздельные роли.
 - Описаны два окружения stage и prod.
