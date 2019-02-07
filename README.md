@@ -151,8 +151,6 @@ someinternalhost_IP = 10.156.0.3
 
 В процессе
 
-</p></details>
-
 
 #gcloud command for create instance with startup script from local file
 
@@ -175,6 +173,11 @@ gcloud compute --project=infra-226316 firewall-rules create default-puma-server 
 
 testapp_IP = 35.204.135.240
 testapp_port = 9292
+
+
+
+</p></details>
+
 
 ## HW5
 
