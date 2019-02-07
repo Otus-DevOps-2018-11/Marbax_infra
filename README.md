@@ -2,7 +2,7 @@
 
 Marbax Infra repository
 
-## <details><summary>HW1 Знакомство с Git</summary><p>
+<details><summary>HW1 Знакомство с Git</summary><p>
 
  ### Регистрация:
  - GitHub подключен к платформе Otus
