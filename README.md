@@ -116,6 +116,7 @@ Host bastion
 
  <details><summary>На хосте bastion выполнены команды </summary><p>
 
+```
  cat <<EOF> setupvpn.sh
  \#!/bin/bash
  echo "deb http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.4 multiverse" > /etc/apt/sources.list.d/mongodb-org-3.4.list
@@ -128,6 +129,7 @@ Host bastion
  systemctl start pritunl mongod
  systemctl enable pritunl mongod
  EOF
+```
 
  </p></details>
 
