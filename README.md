@@ -48,6 +48,7 @@ testapp_port = 9292
 <details><summary>##PR7</summary><p>
 
 created "fry" image and create "bake" image with additional tasks , aded puma.service which starts with machine and aded script to config-scripts which create instance from reddit-full image
+</p></details>
 
 <details><summary>##PR8</summary><p>
 
@@ -58,6 +59,7 @@ resource "google_compute_project_metadata_item" "default" {
   value = "op:${file(var.public_key_path)}appuser:${file(var.public_key_path)}appuser1:${file(var.public_key_path)}"
 }
 Все ключи перезаписываются, если в вебе добавлять какие то ключи , то при след terraform apply они будут удалены .
+</p></details>
 
 <details><summary>##PR9</summary><p>
 
@@ -72,11 +74,13 @@ resource "google_compute_project_metadata_item" "default" {
 "Error: Error locking state: Error acquiring the state lock: writing "gs://marbax-infra-bucket2/stage/default.tflock" failed: googleapi: Error 412: Precondition Failed, conditionNotMet"
 
 -** Gровиженеры для деплоя приложения и юнита не осилил ,ошибка : * module.app.google_compute_instance.app: interrupted - last error: dial tcp 35.234.90.228:22: i/o timeout.
+</p></details>
 
 <details><summary>##PR10 Ansible-1</summary><p>
 
 Так как папка редит существует ,то плейбук не вносит никаких изменений , если ее удалить коммандой ansible app -m command -a 'rm -rf ~/reddit' , то применения плейбука вносит изменения .
 Не совсем понял какой смысл в такнцах с бубном вокруг инвентори в формате джсона и скриптов .
+</p></details>
 
 <details><summary>##PR11 Ansible-2</summary><p>
 
@@ -87,6 +91,7 @@ resource "google_compute_project_metadata_item" "default" {
 - Подхов в множество плейбуков - самый приятный и масштабируемый ,просто переиспользовать плейбуки ,никаких доп ключей.
 Так же был изменен провижн образов Packer на Ansible-плейбуки.
 Задание со * не выполнено :С
+</p></details>
 
 <details><summary>##PR11 Ansible-3 работа с ролями и окружениями</summary><p>
 
@@ -96,5 +101,6 @@ resource "google_compute_project_metadata_item" "default" {
 - Использован Ansible Vault для шифровки данных дополнительно добавленых пользователей.
 
 Задания со * не выполнены :с
+</p></details>
 
 
