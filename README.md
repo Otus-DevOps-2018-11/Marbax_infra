@@ -118,7 +118,7 @@ Host bastion
 
 ```
  cat <<EOF> setupvpn.sh
- \#!/bin/bash
+ #!/bin/bash
  echo "deb http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.4 multiverse" > /etc/apt/sources.list.d/mongodb-org-3.4.list
  echo "deb http://repo.pritunl.com/stable/apt xenial main" > /etc/apt/sources.list.d/pritunl.list
  apt-key adv --keyserver hkp://keyserver.ubuntu.com --recv 0C49F3730359A14518585931BC711F9BA15703C6
@@ -149,13 +149,21 @@ someinternalhost_IP = 10.156.0.3
 
 ## HW4
 
-<details><summary>Основные сервисы Google Cloud Platform (GCP).</summary><p>
+<details><summary>cloud-testapp Основные сервисы Google Cloud Platform (GCP).</summary><p>
 
-В процессе
+### Установлен и настроен gcloud для работы с нашим аккаунтом
+- Скачан с офф сайта и устанвлен согласно документации от туда же
+### Создан хост с помощью gcloud
+### Установлен Ruby для работы приложения 
+### Установлен MongoDB и запущен
+### Задеплоино тестовое приложение ,запущено и проверено
+- Так же открыт порт в фаерволе для http
 
+### Созданы скрипты для установки ruby , mongodb и дэплоя приложения соответственно
 
-#gcloud command for create instance with startup script from local file
-
+### Доп задание 
+- Создание инстанса с использованием стартап скрипта 
+```
 gcloud compute instances create reddit-app\
   --boot-disk-size=10GB \
   --image-family ubuntu-1604-lts \
@@ -164,66 +172,126 @@ gcloud compute instances create reddit-app\
   --tags puma-server \
   --restart-on-failure \
   --metadata-from-file startup-script=/home/op/Documents/Marbax_infra/startup_script.sh 
+```
+или через урл
+```
+ --metadata startup-script-url=gs://bucket/file
+```
 
-#or with url --metadata startup-script-url=gs://bucket/file
-
-#gcloud command for create firewall rule
-
+- Создание правила фаервола при помощи gcloud 
+```
 gcloud compute --project=infra-226316 firewall-rules create default-puma-server --direction=INGRESS --priority=1000 --network=default --action=ALLOW --rules=tcp:9292 --source-ranges=0.0.0.0/0 --target-tags=puma-server
+```
 
-#IP and port of host with test deployment homework 
-
+- Данные для подключения 
+```
 testapp_IP = 35.204.135.240
 testapp_port = 9292
-
-
+```
 
 </p></details>
 
 
 ## HW5
 
-<details><summary>Модели управления инфраструктурой. </summary><p>
+<details><summary>packer-base Модели управления инфраструктурой. </summary><p>
 
-created "fry" image and create "bake" image with additional tasks , aded puma.service which starts with machine and aded script to config-scripts which create instance from reddit-full image
+- Скачан Пакер , помещен в директорию ```/opt/``` , для окружения дописан путь в ```/etc/environment``` и применен ```source /etc/environment```
+- Поделючен пользователь для использования Google API другими приложениями ```gcloud auth application-default login```
+- Собран образ VM с предустановлеными  Ruby и MongoDB (baked-образ)
+ - ```gcloud projects list``` посмотреть проекты на своем аккаунте
+- Разобраны основные настройки секции builder в шаблоне , которая отвечает за создание виртуальной машины и образа
+- Создана provisiners секция , которая отвечает за установку доп. ПО. Использованы shell скрипты для установки приложения и зависимостей ,также для установки базы данных
+- Провалидирован шаблон ```packer validate ./ubuntu16.json``` и начата сборка ```packer build ubuntu16.json```
+- Создан инстанс из ранее подготовленого образа
+- Параметизирован созданый шаблон , переменные вынесены в ```variables.json```
+- Исследованы другие опции builder для GCP
+
+### Доп задание с *
+#### Подход к управлению инфраструктурой Immutable infrastructure
+- Создан шаблон immutable.json из которого пакер создает полностью готовый к работе инстанс (добавлен deploy скрипт)
+- Создан shell-скрипт create-reddit-vm.sh в директории congig-scripts , который создает инстанс из раннее подготовленых образов 
+
 </p></details>
 
 ## HW6
 
-<details><summary>Практика Infrastructure as a Code (IaC)</summary><p>
+<details><summary>terraform-1 Практика Infrastructure as a Code (IaC)</summary><p>
 
+- Скачан Terraform. Помещен в директорию ```/opt/``` , для окружения дописан путь в ```/etc/environment``` и применен ```source /etc/environment```
+- В .gitignore добавлены служебные файлы тераформа 
+- Определена секция Provider ,которая позволяет тераформу управлять ресурсами GCP через API. Для загрузки провайдера выполнено ```terraform init```
+- Добавлен resource для создания VM 
+- ```terraform plan``` в директории тераформа проверяет валидность шаблона и показывает какие он принесет действия 
+- ```terraform apply -auto-approve=true``` создание инстанса . Так же создается terraform.tfstate , в котором хранится состояние ресурсов
+- ```terraform show``` для просмотра .tfstate файла 
+- Добавлен ресурс ssh ключей в метаданные 
+- Создан output.tf ,с записыными перменными IP адресов,которые он будет выводить после удачного создания инстанса. ```terraform refresh``` обновление статусов и вывод аутпута. ```terraform output```  вывод аутпута ```terraform output app_extental_ip``` вывод значения конкретной переменной 
+- Определен ресурс с правилом фаервола для доступа к приложению
+- Определены секции провиженеров , которые копируют systemd unit и выполняют скрипт дэплоя в инстансе ,при создании
+- Для работы провиженеров определена секция connection ,в которой описан способ подлкючения провижинеров к VM
+- Параметизирован конфиг тераформа , дэфолтные переменные вынесены в variables.tf 
+- Создан terraform.tfvars из которого тераформ берет переменные 
+
+### Самостоятельное задания
+- Определена переменная для приватного ключа
+- Определена переменная для зоны ресурса
+- ```terraform fmt``` отформатирована конфигурация ,приведена в приятный внешний вид
+- Создан terraform.tfvars.example ,который комитится в репу
+
+### Доп задание *
 Добавление ключей для проекта ,для нескольких пользователей
-
+```
 resource "google_compute_project_metadata_item" "default" {
   key   = "ssh-keys"
   value = "op:${file(var.public_key_path)}appuser:${file(var.public_key_path)}appuser1:${file(var.public_key_path)}"
 }
-Все ключи перезаписываются, если в вебе добавлять какие то ключи , то при след terraform apply они будут удалены .
+```
+- Все ключи перезаписываются, если в вебе добавлять какие то ключи , то при след terraform apply они будут удалены .
+
+### Доп задание ** не выполнено 
+
 </p></details>
 
 ## HW7
 
-<details><summary>Принципы организации инфраструктурного кода и работа над инфраструктурой в команде на примере Terraform.</summary><p>
+<details><summary>terraform-2 Принципы организации инфраструктурного кода и работа над инфраструктурой в команде на примере Terraform.</summary><p>
 
-В терраформе все красивенько раскидано по модулям . 
-1. Введите в source_ranges не ваш IP адрес, примените
-правило и проверьте отсутствие соединения к обоим
-хостам по ssh. Проконтролируйте, как изменилось правило
-файрвола в веб консоли.
--Соеденение отсутствовало.В веб консоли меняется фильтр в правеле фаерваола.
+- ```gcloud compute firewall-rules list``` просмотр установленных правил фаервола
+- В конфигурацию тераформа добавлен ресурс создания правила фаервола для доступа по ssh. Если ранее было создано правило в вебе ,тераформ может не знать о нем . ```terraform import google_compute_firewall.firewall_ssh default-allow-ssh``` импорт правила из правил GCP в тераформ
+- Создана неявная зависимость с ссылкой на IP
+- Конфиг паккера ,так же как и конфиг тераформа разделен на два отдельных ,для приложения и для базы данных. Общие правила фаервола вынесены в отдельный файл
+- Конфигурации тераформа приведены к модульной структуре
+- ```terraform get``` чтобы загрузить модули и начать использовать
+- Параметизирован конфиг для тераформа 
+- Созданы два окружения stage и prod
+- Добавлен модуль storage-bucket для удаленного хранилища
 
--* Созданы бакеты.Перенесены стейт файлы прода и стейджа в удаленные бакеты. При паральном применении конфигурации тераформ говорит что локнут стейт :
+### Доп задание *
+- Созданы бакеты.Перенесены стейт файлы прода и стейджа в удаленные бакеты. При паральном применении конфигурации тераформ говорит что локнут стейт :
 "Error: Error locking state: Error acquiring the state lock: writing "gs://marbax-infra-bucket2/stage/default.tflock" failed: googleapi: Error 412: Precondition Failed, conditionNotMet"
 
--** Gровиженеры для деплоя приложения и юнита не осилил ,ошибка : * module.app.google_compute_instance.app: interrupted - last error: dial tcp 35.234.90.228:22: i/o timeout.
+### Доп задание **
+Не выполнено
+
+
 </p></details>
 
 ## HW8
 
 <details><summary>Ansible-1 Управление конфигурацией.</summary><p>
 
-Так как папка редит существует ,то плейбук не вносит никаких изменений , если ее удалить коммандой ansible app -m command -a 'rm -rf ~/reddit' , то применения плейбука вносит изменения .
+### Установлен Ansible
+- Установлен Python 2.7
+- Установлен pip либо easy_isntall
+- ```pip install ansible>=2.4``` установка ансибла версии больше 2.4
+### Познакомился с базовыми функциями и инвентори 
+### Выполнял различные модули на подготовленной в прошлых ДЗ инфраструктуре
+### Написан просто плейбук
+- Так как папка редит существует ,то плейбук не вносит никаких изменений , если ее удалить коммандой ansible app -m command -a 'rm -rf ~/reddit' , то применения плейбука вносит изменения .
+
 Не совсем понял какой смысл в такнцах с бубном вокруг инвентори в формате джсона и скриптов .
+
 </p></details>
 
 ## HW9
@@ -236,7 +304,10 @@ resource "google_compute_project_metadata_item" "default" {
 - Подход один плейбук, с множеством разделенных сценариев с обобщенными тэгами ,немного удобнее ,не нужно указывать хочты ,только тэги.
 - Подхов в множество плейбуков - самый приятный и масштабируемый ,просто переиспользовать плейбуки ,никаких доп ключей.
 Так же был изменен провижн образов Packer на Ansible-плейбуки.
-Задание со * не выполнено :С
+
+### Задание со *
+не выполнено :С
+
 </p></details>
 
 ## HW10
@@ -248,7 +319,9 @@ resource "google_compute_project_metadata_item" "default" {
 - Установлена комьюнити роль nginx (ansible-galaxy).
 - Использован Ansible Vault для шифровки данных дополнительно добавленых пользователей.
 
-Задания со * не выполнены :с
+### Задания со * 
+не выполнены :с
+
 </p></details>
 
 
