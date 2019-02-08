@@ -9,7 +9,7 @@ module "storage-bucket" {
   version = "0.1.1"
 
   # Имена поменяйте на другие
-  name = ["marbax-infra-bucket1", "marbax-infra-bucket2"]
+  name = ["marbax-infra-bucket1"]
 }
 
 output storage-bucket_url {
