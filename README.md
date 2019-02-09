@@ -325,3 +325,129 @@ resource "google_compute_project_metadata_item" "default" {
 </p></details>
 
 
+## HW11
+
+### Локальная разработка при помощи Vagrant,доработка ролей для провижининга в Vagrant
+### Переключение сбора образов пакером на использование ролей
+### Подключение Travis CI для автоматического прогона тестов
+
+- Скачан Vagrant и VirtualBox с офф сайтов
+
+<details><summary>Добавлено в .gitignore</summary><p>
+
+```
+# Vagrant & molecule
+.vagrant/
+*.log
+*.pyc
+.molecule
+.cache
+.pytest_cache
+```
+</p></details>
+
+<details><summary>Создан Vagrantfile с определением двух VM</summary><p>
+
+```
+Vagrant.configure("2") do |config|
+
+  config.vm.provider :virtualbox do |v|
+    v.memory = 512
+  end
+
+  config.vm.define "dbserver" do |db|
+    db.vm.box = "ubuntu/xenial64"
+    db.vm.hostname = "dbserver"
+    db.vm.network :private_network, ip: "10.10.10.10"
+  end
+  
+  config.vm.define "appserver" do |app|
+    app.vm.box = "ubuntu/xenial64"
+    app.vm.hostname = "appserver"
+    app.vm.network :private_network, ip: "10.10.10.20"
+  end
+end
+```
+</p></details>
+
+- Подняты виртуалки ```vagrant up```. Проверен скачаные боксы ```vagrant box list```. Проверен статус VMs ```vagrant status```
+- Выполнено подключение к VM ```vagrant ssh appserver```
+- Добавлен провиженер ansible для db. ```vagrant provision dbserver``` применение провиженера к уже созданой VM 
+- Создан плейбук base.yml для установки питона ,т.к. ансибл работает на питоне ,плейбук исполняется как shell скрипт
+- Создан install_mongo.yml для установки базовой монги и config_mongo.yml для копирования конфига
+- С помощью ```telnet 10.10.10.10 27017``` с хоста приложения проверена доступность порта монги
+- Добавлен плейбук ruby.yml ,который устанавливает зависимости приложения и puma.yml ,который копирует сервис и конфиг на хост приложения
+- Добавлен провиженер ansible для app.
+- ```cat .vagrant/provisioners/ansible/inventory/vagrant_ansible_inventory``` посмотерть инвентори файл провиженеров
+- Параметизирован пользователь для appserver в ansible/roles/app/defaults и все его упоминания , в ansible/playbooks/deploy.yml и Vagrantfile в том числе
+- ```vagrant destroy -f``` машини удалены , потом ```vagrant up``` созданы заново
+
+### Доп задание с * 
+Не выполнено :С
+
+### Тестирование ролей при помощи Molecule и Testinfra
+- Установлен virtualenv ```pip install virtualenv```. Создана директория для виртуального окружения ```mkdir .infra_python_en```. Создано виртуальное окружение```virtualenv venv```. Активировано окружение ```source .infra_python_env/venv/bin/activate```.
+
+<details><summary>В виртуальном окружении питона установлено</summary><p>
+
+```
+ansible>=2.4
+molecule>=2.6
+testinfra>=1.10
+python-vagrant>=0.5.15
+```
+</p></details>
+
+- В директории ansible/roles/db/ выполнено ```molecule init scenario --scenario-name default -r db -d vagrant```  для создания заготовки тестов 
+
+<details><summary>В db/molecule/default/tests/test_default.py добавлено несколько Testinfra модулей </summary><p>
+
+```
+import os
+
+import testinfra.utils.ansible_runner
+
+testinfra_hosts = testinfra.utils.ansible_runner.AnsibleRunner(
+    os.environ['MOLECULE_INVENTORY_FILE']).get_hosts('all')
+
+# check if MongoDB is enabled and running
+def test_mongo_running_and_enabled(host):
+    mongo = host.service("mongod")
+    assert mongo.is_running
+    assert mongo.is_enabled
+
+# check if configuration file contains the required line
+def test_config_file(host):
+    config_file = host.file('/etc/mongod.conf')
+    assert config_file.contains('bindIp: 0.0.0.0')
+    assert config_file.is_file
+```
+</p></details>
+
+<details><summary>В db/molecule/default/molecule.yml добавлено описание тестовой машины (хоть оно и дэфолтное норм) </summary><p>
+
+```
+---
+...
+driver:
+ name: vagrant
+ provider:
+ name: virtualbox
+lint:
+ name: yamllint
+platforms:
+ - name: instance
+ box: ubuntu/xenial64
+provisioner:
+ name: ansible
+ lint:
+ name: ansible-lint
+ ```
+
+</p></details>
+
+- В nasible/roles/db выполнено ```molecule create``` для создания VM . ```molecule list``` просмотр  инстансов молекулы. ```molecule login -h instance``` подключение к VM
+- ansible/roles/db/molecule/default/playbook.yml плейбук молекулы .```molecule converge``` применение плейбука .  ```molecule verify``` запуск тестов
+- Добавлен тест на прослушку порта для монги
+- Роли из app.yml и db.yml закинуты в packer_app.yml и packer_db.yml соответсвенно
+
