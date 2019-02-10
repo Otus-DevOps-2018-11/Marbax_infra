@@ -11,4 +11,3 @@ systemctl start pritunl
 systemctl start mongod
 systemctl enable pritunl
 systemctl enable mongod
-

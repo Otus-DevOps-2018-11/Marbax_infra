@@ -8,4 +8,3 @@
 - include: ruby.yml
   tags: ruby
 - include: puma.yml
-

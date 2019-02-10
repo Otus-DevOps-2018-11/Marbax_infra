@@ -450,4 +450,3 @@ provisioner:
 - ansible/roles/db/molecule/default/playbook.yml плейбук молекулы .```molecule converge``` применение плейбука .  ```molecule verify``` запуск тестов
 - Добавлен тест на прослушку порта для монги
 - Роли из app.yml и db.yml закинуты в packer_app.yml и packer_db.yml соответсвенно
-

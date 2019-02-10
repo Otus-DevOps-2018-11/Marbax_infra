@@ -1,4 +1,3 @@
-
 *.tfstate
 *.tfstate.*.backup
 *.tfstate.backup
@@ -17,4 +16,3 @@ vault.key
 .cache
 .pytest_cache
 .infra_python_env/
-

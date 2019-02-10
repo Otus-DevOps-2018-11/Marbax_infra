@@ -21,7 +21,3 @@ WantedBy=multi-user.target
 " >/etc/systemd/system/puma.service
 systemctl daemon-reload
 systemctl enable puma
-
-
-
-

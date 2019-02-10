@@ -15,4 +15,3 @@ Install
 .. code-block:: bash
 
     $ sudo pip install python-vagrant
-

@@ -38,5 +38,3 @@ variable name {
   description = "name of the db"
   default     = "reddit-db"
 }
-
-
