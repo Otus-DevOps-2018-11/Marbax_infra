@@ -1,6 +1,4 @@
-
 ---
-
 - name: Install MongoDB 3.2
   hosts: all
   become: true
@@ -29,6 +27,5 @@
       name: mongod
       enabled: yes
 
-      
-
-      
+  roles:
+    - db

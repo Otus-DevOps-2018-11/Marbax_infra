@@ -1,6 +1,4 @@
-
 ---
-
 - name: Configure hosts & deploy application            # <-- Словесное описание сценария (name)
   hosts: all                                            # <-- Для каких хостов будут выполняться описанные ниже таски (hosts)
   vars:
@@ -57,6 +55,3 @@
   - name: reload puma
     become: true
     systemd: name=puma.service state=restarted
-
-
-    
