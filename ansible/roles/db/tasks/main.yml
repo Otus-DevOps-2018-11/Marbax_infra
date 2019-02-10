@@ -3,5 +3,6 @@
   debug: msg="This host is in {{ env }} environment!!!"
 
 - include: install_mongo.yml
+  tags: install
 - include: config_mongo.yml
 

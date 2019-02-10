@@ -24,3 +24,5 @@ def test_config_file(host):
 def test_port_listening(host):
     port_listening = host.socket("tcp://0.0.0.0:27017")
     assert port_listening.is_listening
+
+

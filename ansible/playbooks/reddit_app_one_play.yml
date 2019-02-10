@@ -1,6 +1,4 @@
-
 ---
-
 - name: Configure hosts & deploy application            # <-- Словесное описание сценария (name)
   hosts: all                                            # <-- Для каких хостов будут выполняться описанные ниже таски (hosts)
   vars:
